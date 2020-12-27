@@ -40,11 +40,25 @@ class UI {
       <td>${song.title}</td>
       <td>${song.artist}</td>
       <td>${song.genres}</td>
-      <td><a href="#" class="btn btn-danger btn-sm">X</a></td>
+      <td><a href="#" class="btn btn-danger btn-sm delete">X</a></td>
     `;
     
     // Append the rows to the list
     list.appendChild(row);
+  }
+
+  static deleteSong(targetElement) {
+    if (targetElement.classList.contains("delete")) {
+      // Target the row (parent's element)
+      targetElement.parentElement.parentElement.remove();
+    }
+  }
+
+
+  static clearFields() {
+    document.querySelector("#song").value = "";
+    document.querySelector("#artist").value = "";
+    document.querySelector("#genres").value = "";
   }
 }
 
@@ -53,8 +67,35 @@ class UI {
 // Event: Display song
 document.addEventListener("DOMContentLoaded", UI.displaySong);
 
+/* Event: Add a song
+1) Grab the form in DOM
+2) Add event listener : submit
+3) Prevent default behavior of submit to hold values
+4) Grab the values in the form
+5) Instanitate a book object using the grabbed values 
+*/
+document.querySelector("#music-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  
+  const title = document.querySelector("#song").value;
+  const artist = document.querySelector("#artist").value;
+  const genres = document.querySelector("#genres").value;
 
+  const song = new Song(title, artist, genres);
 
-// Event: Add a song
+  console.log(song);
+
+  // Add Song to List
+  UI.addSongToList(song);
+
+  // Clear the fields after submitting
+  UI.clearFields();
+});
 
 // Event: Remove a song 
+// To remove a song, we have to target the whole table body 
+document.querySelector("#song-list").addEventListener("click", (e) => {
+  // Get each of the target within the music form 
+  console.log(e.target);
+  UI.deleteSong(e.target);
+});
